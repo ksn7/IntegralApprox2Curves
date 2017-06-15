@@ -37,6 +37,7 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
         x_max = input_box( default = 5, label = "x max", width = 5),
         sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum'], label = "type of sum") ):
     
+    # Avoid the deprecation warning
     f = func.function(x)
     g = gunc.function(x)
     
@@ -50,11 +51,13 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
     half = width / 2
     sum_area = 0
  
+    # Check if f is a function of x, then add the rectangles
     if f.has(x):
         rectangles = polygon([ (lower, f(lower)), (lower, f(lower)+10^-12), (lower, f(lower)-10^-12) ], aspect_ratio = "automatic")
     else:
         rectangles = polygon([ (lower, f), (lower, f+10^-12), (lower, f-10^-12) ], aspect_ratio = "automatic")
     
+    # Left sum
     if sum_type == "left" :    
         for j in range(n) :
             min = lower + j * width
@@ -63,6 +66,7 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
                 rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(min)), (max, f(min)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                 sum_area += N(width * (g(min) - f(min)))
     
+    # Right sum
     elif sum_type == "right" :    
         for j in range(n) :
             min = lower + j * width
@@ -70,7 +74,8 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
             if f(max) != g(max) :
                 rectangles += polygon([ (min, f(max)), (min, g(max)), (max, g(max)), (max, f(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                 sum_area += N(width * (g(max) - f(max)))
-                
+    
+    # Midpoint sum            
     elif sum_type == "midpoint" :    
         for j in range(n) :
             min = lower + j * width
@@ -79,7 +84,8 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
             if f(mid) != g(mid) :
                 rectangles += polygon([ (min, f(mid)), (min, g(mid)), (max, g(mid)), (max, f(mid)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                 sum_area += N(width * (g(mid) - f(mid)))
-                
+    
+    # Minimum sum            
     elif sum_type == "minimum" :    
         for j in range(n) :
             min = lower + j * width
@@ -91,7 +97,8 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
             if f(height_f) != g(height_g) :
                 rectangles += polygon([ (min, height_f), (min, height_g), (max, height_g), (max, height_f) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
                 sum_area += N(width * (height_g - height_f))
-                
+    
+    # Maximum sum            
     elif sum_type == "maximum" :    
         for j in range(n) :
             min = lower + j * width
@@ -104,14 +111,17 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
                 rectangles += polygon([ (min, height_f), (min, height_g), (max, height_g), (max, height_f) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                 sum_area += N(width * (height_g - height_f))               
     
+    # Print the approximated area
     print "The approximated area between the curves is " + str(sum_area) + "."
     
+    # Calculate the actual area and the precision
     (area, precision) = numerical_integral( g-f, lower, upper )
     l=0
     while precision <= 10^-l:
         l += 1
     print "The actual area between the curves is " + str(area) + ", accurate to 10^-" + str(l)
     
+    # Combine the plots and show the graph
     graph = graph_g + graph_filled + graph_f + rectangles
     graph.show()
 
@@ -119,6 +129,6 @@ def riemann2( func = input_box( default = x, label = "lower function", width = 2
 </div>
 
 <hr>
-Last modified on June 13th, 2017.
+Last modified on June 15th, 2017.
 </body>
 </html>
