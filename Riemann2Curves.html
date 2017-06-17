@@ -43,6 +43,27 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
     half = width / 2
     sum_area = 0
     
+    # Set up for coloring different sections
+    x_start = lower
+    x_end = x_start + 0.25
+    zeroes = []
+    zeroes.append(lower)
+
+    # While loop to find all the roots of the function
+    while x_end <= upper :
+        try:
+            zero = find_root(f-g, x_start, x_end)
+            if (zero not in zeroes):
+                zeroes.append( zero )
+            x_start = zero + 10^-12
+            x_end = x_start + 0.25
+        except:
+            x_end += 0.25
+    zeroes.append(upper)
+     
+    # Initialize a filled plot so colors can be added later    
+    graph_filled = point( (lower, 0), color = "black", size = 0.5) 
+    
     # Try to convert input to a function. 
     # If it doesn't work, run a different version that works for constants.
     try:
@@ -145,10 +166,41 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
-                            sum_area += N(width * (height_f - height_g))   
-                        
+                            sum_area += N(width * (height_f - height_g))  
+                            
+                # Print the approximated area
+                print "The approximate Riemann sum is " + str(sum_area) + "."             
+                            
+            # Color parts of the graph according to positive or negative area             
+            for j in range( len( zeroes ) - 1 ):
+                # Pick a point between two zeroes or between a zero and an endpoint
+                x_mid = (zeroes[j] + zeroes[j+1]) / 2
+         
+                # If the "mid"-point is positive, the interval is positive, color accordingly
+                # Else color the opposite color
+                if f(x_mid) > g(x_mid):
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
+                        fillcolor = '#dbf9b9' )
+                else:
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]},
+                        fillcolor = '#ff9999' )
+                                                                    
         except: 
             g = gunc
+            
+            # Color parts of the graph according to positive or negative area             
+            for j in range( len( zeroes ) - 1 ):
+                # Pick a point between two zeroes or between a zero and an endpoint
+                x_mid = (zeroes[j] + zeroes[j+1]) / 2
+    
+                # If the "mid"-point is positive, the interval is positive, color accordingly
+                # Else color the opposite color
+                if f(x_mid) > g:
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
+                        fillcolor = '#dbf9b9' )
+                else:
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]},
+                        fillcolor = '#ff9999' )
             
             if draw_rectangles == True:
                 # Left sum
@@ -236,8 +288,11 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
-                            sum_area += N(width * (height_f - height_g))       
-                
+                            sum_area += N(width * (height_f - height_g)) 
+                            
+                # Print the approximated area
+                print "The approximate Riemann sum is " + str(sum_area) + "."                          
+                                                                
     except:
         f = func
         # Initialize rectangles
@@ -333,8 +388,25 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
-                            sum_area += N(width * (height_f - height_g))   
-            
+                            sum_area += N(width * (height_f - height_g)) 
+                            
+                # Print the approximated area
+                print "The approximate Riemann sum is " + str(sum_area) + "."  
+                            
+            # Color parts of the graph according to positive or negative area             
+            for j in range( len( zeroes ) - 1 ):
+                # Pick a point between two zeroes or between a zero and an endpoint
+                x_mid = (zeroes[j] + zeroes[j+1]) / 2
+         
+                # If the "mid"-point is positive, the interval is positive, color accordingly
+                # Else color the opposite color
+                if f > g(x_mid):
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
+                        fillcolor = '#dbf9b9' )
+                else:
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]},
+                        fillcolor = '#ff9999' )                        
+                                               
         except:
             g = gunc 
             
@@ -351,21 +423,35 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                             rectangles += polygon([ (min, f), (min, g), (max, g), (max, f) ], 
                                 color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, 
                                 aspect_ratio = 'automatic')
-                        sum_area += N(width * (f - g))      
-        # Print the approximated area
-        print "The approximate Riemann sum is " + str(sum_area) + "."  
-                
+                        sum_area += N(width * (f - g))
+                        
+                # Print the approximated area
+                print "The approximate Riemann sum is " + str(sum_area) + "."   
+                       
+            # Color parts of the graph according to positive or negative area             
+            for j in range( len( zeroes ) - 1 ):
+                # Pick a point between two zeroes or between a zero and an endpoint
+                x_mid = (zeroes[j] + zeroes[j+1]) / 2
+         
+                # If the "mid"-point is positive, the interval is positive, color accordingly
+                # Else color the opposite color
+                if f(x_mid) > g(x_mid):
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
+                        fillcolor = '#dbf9b9' )
+                else:
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]},
+                        fillcolor = '#ff9999' )                         
+                                                                        
     # Initial graphs and filled area
     graph_f = plot( f, x_min, x_max )
     graph_g = plot( g, x_min, x_max, color = "#2eb82e" )
-    graph_filled = plot( [f,g], (x,lower,upper), fill={0:[1]}, fillcolor = "#ffff99" )            
     
     # Calculate the actual area and the precision
     (area, precision) = numerical_integral( f-g, lower, upper )
     l=0
     while precision <= 10^-l:
         l += 1
-    print "The actual value of the integral is " + str(area) + ", accurate to 10^-" + str(l)
+    print "The actual value of the integral is " + str(area) + ", accurate to 10^-" + str(l) + "."
     
     # Combine the plots and show the graph
     graph = graph_g + graph_filled + graph_f + rectangles
@@ -375,6 +461,6 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 16th, 2017.
+Last modified on June 17th, 2017.
 </body>
 </html>
