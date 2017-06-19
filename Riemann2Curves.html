@@ -48,18 +48,6 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
     x_end = x_start + 0.25
     zeroes = []
     zeroes.append(lower)
-
-    # While loop to find all the roots of the function
-    while x_end <= upper :
-        try:
-            zero = find_root(f-g, x_start, x_end)
-            if (zero not in zeroes):
-                zeroes.append( zero )
-            x_start = zero + 10^-12
-            x_end = x_start + 0.25
-        except:
-            x_end += 0.25
-    zeroes.append(upper)
      
     # Initialize a filled plot so colors can be added later    
     graph_filled = point( (lower, 0), color = "black", size = 0.5) 
@@ -170,6 +158,18 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                             
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."             
+            
+            # While loop to find all the roots of the function
+            while x_end <= upper :
+                try:
+                    zero = find_root(f-g, x_start, x_end)
+                    if (zero not in zeroes):
+                        zeroes.append( zero )
+                    x_start = zero + 10^-12
+                    x_end = x_start + 0.25
+                except:
+                    x_end += 0.25
+            zeroes.append(upper)
                             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -187,6 +187,18 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                                                     
         except: 
             g = gunc
+            
+            # While loop to find all the roots of the function
+            while x_end <= upper :
+                try:
+                    zero = find_root(f-g, x_start, x_end)
+                    if (zero not in zeroes):
+                        zeroes.append( zero )
+                    x_start = zero + 10^-12
+                    x_end = x_start + 0.25
+                except:
+                    x_end += 0.25
+            zeroes.append(upper)
             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -392,6 +404,18 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                             
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."  
+            
+            # While loop to find all the roots of the function
+            while x_end <= upper :
+                try:
+                    zero = find_root(f-g, x_start, x_end)
+                    if (zero not in zeroes):
+                        zeroes.append( zero )
+                    x_start = zero + 10^-12
+                    x_end = x_start + 0.25
+                except:
+                    x_end += 0.25
+            zeroes.append(upper)
                             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -427,6 +451,18 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                         
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."   
+            
+            # While loop to find all the roots of the function
+            while x_end <= upper :
+                try:
+                    zero = find_root(f-g, x_start, x_end)
+                    if (zero not in zeroes):
+                        zeroes.append( zero )
+                    x_start = zero + 10^-12
+                    x_end = x_start + 0.25
+                except:
+                    x_end += 0.25
+            zeroes.append(upper)
                        
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -439,12 +475,12 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                     graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
                         fillcolor = '#dbf9b9' )
                 else:
-                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]},
+                    graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
                         fillcolor = '#ff9999' )                         
                                                                         
     # Initial graphs and filled area
     graph_f = plot( f, x_min, x_max )
-    graph_g = plot( g, x_min, x_max, color = "#2eb82e" )
+    graph_g = plot( g, x_min, x_max, color = "#33cc33" )
     
     # Calculate the actual area and the precision
     (area, precision) = numerical_integral( f-g, lower, upper )
