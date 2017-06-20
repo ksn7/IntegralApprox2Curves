@@ -15,12 +15,30 @@ $(function () {
 });
     </script>
   </head>
+
   <body style="width: 1000px;">
 
   <h1>Riemann Rectangles between Two Curves</h1>
 
-<p>An Interactive Applet powered by Sage and MathJax.</p>
-<p>(By Kelsey Norman with HTML code from Prof. Gregory V. Bard)</p>
+<h4>An Interactive Applet powered by Sage and MathJax.</h4>
+<h4>(By Kelsey Norman with HTML code from Prof. Gregory V. Bard)</h4>
+
+<hr>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="jquery.jslatex.js"></script>
+
+<script>
+$(function () {
+    $(".latex").latex();
+});
+</script>
+
+<div class="latex">
+    \textrm{Here we visualize the integral } \int_a^b[f(x) - g(x)] \textrm{ as the area between the curves,} 
+    \\
+    \textrm{ colored green if the area is positive or red if the area is negative.}
+</div>
 
 <hr>
 
@@ -497,6 +515,6 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 19th, 2017.
+Last modified on June 20th, 2017.
 </body>
 </html>
