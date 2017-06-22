@@ -53,7 +53,7 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
         n = input_box( default = 6, label = "# of intervals", width = 5), 
         x_min = input_box( default = 0, label = "x min", width = 5), 
         x_max = input_box( default = 5, label = "x max", width = 5),
-        sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum'], label = "type of sum"),
+        sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum', 'trapezoidal'], label = "type of sum"),
         draw_rectangles = False ):
     
     # set up for Riemann rectangles
@@ -173,6 +173,19 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
                             sum_area += N(width * (height_f - height_g))  
+                
+                # Trapezoidal sum
+                elif sum_type == "trapezoidal" :
+                    for j in range(n) :
+                        min = lower + j * width
+                        max = lower + (j+1) * width
+                        if f(min) == g(min):
+                            rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        elif f(max) == g(max):
+                            rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        else:    
+                            rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        sum_area += N( ((f(max) - g(max)) + (f(min) - g(min)))/2 * width )
                             
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."             
@@ -187,7 +200,8 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                     x_end = x_start + 0.25
                 except:
                     x_end += 0.25
-            zeroes.append(upper)
+            if upper not in zeroes:
+                zeroes.append(upper)
                             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -216,7 +230,8 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                     x_end = x_start + 0.25
                 except:
                     x_end += 0.25
-            zeroes.append(upper)
+            if upper not in zeroes:
+                zeroes.append(upper)
             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -319,6 +334,19 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
                             sum_area += N(width * (height_f - height_g)) 
+                
+                # Trapezoidal sum
+                elif sum_type == "trapezoidal" :
+                    for j in range(n) :
+                        min = lower + j * width
+                        max = lower + (j+1) * width
+                        if f(min) == g:
+                            rectangles += polygon([ (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        elif f(max) == g:
+                            rectangles += polygon([ (min, f(min)), (min, g), (max, g) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        else:
+                            rectangles += polygon([ (min, f(min)), (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        sum_area += N( ((f(max) - g) + (f(min) - g))/2 * width )
                             
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."                          
@@ -419,6 +447,19 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                                     (max, height_g), (max, height_f) ], color = '#ff4d4d', 
                                     edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic') 
                             sum_area += N(width * (height_f - height_g)) 
+                
+                # Trapezoidal sum
+                elif sum_type == "trapezoidal" :
+                    for j in range(n) :
+                        min = lower + j * width
+                        max = lower + (j+1) * width
+                        if f == g(min):
+                            rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        elif f == g(max):
+                            rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        else:
+                            rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        sum_area += N( ((f - g(max)) + (f - g(min)))/2 * width )
                             
                 # Print the approximated area
                 print "The approximate Riemann sum is " + str(sum_area) + "."  
@@ -433,7 +474,8 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                     x_end = x_start + 0.25
                 except:
                     x_end += 0.25
-            zeroes.append(upper)
+            if upper not in zeroes:
+                zeroes.append(upper)
                             
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -480,7 +522,8 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                     x_end = x_start + 0.25
                 except:
                     x_end += 0.25
-            zeroes.append(upper)
+            if upper not in zeroes:
+                zeroes.append(upper)
                        
             # Color parts of the graph according to positive or negative area             
             for j in range( len( zeroes ) - 1 ):
@@ -489,7 +532,7 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
          
                 # If the "mid"-point is positive, the interval is positive, color accordingly
                 # Else color the opposite color
-                if f(x_mid) > g(x_mid):
+                if f > g:
                     graph_filled += plot( [f,g], (x, zeroes[j], zeroes[j+1]), fill = {0:[1]}, 
                         fillcolor = '#dbf9b9' )
                 else:
@@ -515,6 +558,6 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 20th, 2017.
+Last modified on June 22nd, 2017.
 </body>
 </html>
