@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Riemann Rectangles between Two Curves</title>
+    <title>Integral Approximations for Two Curves</title>
     <script src="https://sagecell.sagemath.org/static/jquery.min.js"></script>
     <script src="https://sagecell.sagemath.org/embedded_sagecell.js"></script>
     <script>
@@ -18,7 +18,7 @@ $(function () {
 
   <body style="width: 1000px;">
 
-  <h1>Riemann Rectangles between Two Curves</h1>
+  <h1>Integral Approximations for Two Curves</h1>
 
 <h4>An Interactive Applet powered by Sage and MathJax.</h4>
 <h4>(By Kelsey Norman with HTML code from Prof. Gregory V. Bard)</h4>
@@ -53,10 +53,10 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
         n = input_box( default = 6, label = "# of intervals", width = 5), 
         x_min = input_box( default = 0, label = "x min", width = 5), 
         x_max = input_box( default = 5, label = "x max", width = 5),
-        sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum', 'trapezoidal'], label = "type of sum"),
+        sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum', 'trapezoidal', 'Simpsons Rule'], label = "type of sum"),
         draw_rectangles = False ):
     
-    # set up for Riemann rectangles
+    # set up for intervals
     width = (upper - lower) / n
     half = width / 2
     sum_area = 0
@@ -186,9 +186,71 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                         else:    
                             rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
                         sum_area += N( ((f(max) - g(max)) + (f(min) - g(min)))/2 * width )
+                 
+                # Simpson's Rule
+                elif sum_type == "Simpsons Rule" :
+                    
+                    if not n%2 == 0 :
+                        print "n must be even to run Simpson's Rule"
+                        
+                    else :
+                        for j in range(n/2) :
+                            x1 = lower + 2*j*width
+                            x2 = x1 + width
+                            x3 = x1 + 2*width
+
+                            y1 = f(x1)
+                            y2 = f(x2)
+                            y3 = f(x3) 
+                            
+                            g1 = g(x1)
+                            g2 = g(x2)
+                            g3 = g(x3)
+                            
+                            sum_area += (width / 3) * ( y1 + 4*y2 + y3 ) - (width / 3) * (g1 + 4*g2 + g3 )
+                            
+                            # Visually mark the intervals - add things to "rectangles" even though the subdivision is different here
+                            rectangles += point( (x1, g1), color = "blue", size = 20 )
+                            rectangles += point( (x2, g2), color = "#8080ff", size = 20 )
+                            rectangles += point( (x3, g3), color = "blue", size = 20 )
+                            rectangles += point( (x1, y1), color = "blue", size = 20 ) + point( (x2, y2), color = "#8080ff", size = 20 ) 
+                            rectangles += point( (x3, y3), color = "blue", size = 20 ) + line([ (x1, g1), (x1, y1)], color = "blue", linestyle = '--' )
+                            rectangles += line([ (x2, g2), (x2, y2)], color = "#8080ff", linestyle = '--' ) + line([ (x3, g3), (x3, y3)], color = "blue", linestyle = '--' )
+                            
+                            # Solve for a, b, and c - function f
+                            quad = matrix([ [x1^2, x1, 1, y1], [x2^2, x2, 1, y2], [x3^2, x3, 1, y3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the f parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = '#99e699' )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'green', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'green', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'green', size = 30 )
+                            
+                            # Then do the same for g
+                            quad = matrix([ [x1^2, x1, 1, g1], [x2^2, x2, 1, g2], [x3^2, x3, 1, g3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the g parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = ( 0.75, 0.5, 0.5 ) )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'red', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'red', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                print "The approximate Riemann sum is " + str(sum_area) + "."             
+                print "The approximated area is " + str(sum_area.n()) + "."             
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -347,9 +409,71 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                         else:
                             rectangles += polygon([ (min, f(min)), (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
                         sum_area += N( ((f(max) - g) + (f(min) - g))/2 * width )
+                        
+                # Simpson's Rule
+                elif sum_type == "Simpsons Rule" :
+                    
+                    if not n%2 == 0 :
+                        print "n must be even to run Simpson's Rule"
+                        
+                    else :
+                        for j in range(n/2) :
+                            x1 = lower + 2*j*width
+                            x2 = x1 + width
+                            x3 = x1 + 2*width
+
+                            y1 = f(x1)
+                            y2 = f(x2)
+                            y3 = f(x3) 
                             
+                            g1 = g
+                            g2 = g
+                            g3 = g
+                            
+                            sum_area += (width / 3) * ( y1 + 4*y2 + y3 ) - (width / 3) * (g1 + 4*g2 + g3 )
+                            
+                            # Visually mark the intervals - add things to "rectangles" even though the subdivision is different here
+                            rectangles += point( (x1, g1), color = "blue", size = 20 )
+                            rectangles += point( (x2, g2), color = "#8080ff", size = 20 )
+                            rectangles += point( (x3, g3), color = "blue", size = 20 )
+                            rectangles += point( (x1, y1), color = "blue", size = 20 ) + point( (x2, y2), color = "#8080ff", size = 20 ) 
+                            rectangles += point( (x3, y3), color = "blue", size = 20 ) + line([ (x1, g1), (x1, y1)], color = "blue", linestyle = '--' )
+                            rectangles += line([ (x2, g2), (x2, y2)], color = "#8080ff", linestyle = '--' ) + line([ (x3, g3), (x3, y3)], color = "blue", linestyle = '--' )
+                            
+                            # Solve for a, b, and c - function f
+                            quad = matrix([ [x1^2, x1, 1, y1], [x2^2, x2, 1, y2], [x3^2, x3, 1, y3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the f parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = '#99e699' )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'green', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'green', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'green', size = 30 )
+                            
+                            # Then do the same for g
+                            quad = matrix([ [x1^2, x1, 1, g1], [x2^2, x2, 1, g2], [x3^2, x3, 1, g3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the g parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = ( 0.75, 0.5, 0.5 ) )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'red', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'red', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'red', size = 30 )
+                        
                 # Print the approximated area
-                print "The approximate Riemann sum is " + str(sum_area) + "."                          
+                print "The approximated area is " + str(sum_area.n()) + "."                          
                                                                 
     except:
         f = func
@@ -460,9 +584,71 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                         else:
                             rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
                         sum_area += N( ((f - g(max)) + (f - g(min)))/2 * width )
+                
+                # Simpson's Rule
+                elif sum_type == "Simpsons Rule" :
+                    
+                    if not n%2 == 0 :
+                        print "n must be even to run Simpson's Rule"
+                        
+                    else :
+                        for j in range(n/2) :
+                            x1 = lower + 2*j*width
+                            x2 = x1 + width
+                            x3 = x1 + 2*width
+
+                            y1 = f
+                            y2 = f
+                            y3 = f 
+                            
+                            g1 = g(x1)
+                            g2 = g(x2)
+                            g3 = g(x3)
+                            
+                            sum_area += (width / 3) * ( y1 + 4*y2 + y3 ) - (width / 3) * (g1 + 4*g2 + g3 )
+                            
+                            # Visually mark the intervals - add things to "rectangles" even though the subdivision is different here
+                            rectangles += point( (x1, g1), color = "blue", size = 20 )
+                            rectangles += point( (x2, g2), color = "#8080ff", size = 20 )
+                            rectangles += point( (x3, g3), color = "blue", size = 20 )
+                            rectangles += point( (x1, y1), color = "blue", size = 20 ) + point( (x2, y2), color = "#8080ff", size = 20 ) 
+                            rectangles += point( (x3, y3), color = "blue", size = 20 ) + line([ (x1, g1), (x1, y1)], color = "blue", linestyle = '--' )
+                            rectangles += line([ (x2, g2), (x2, y2)], color = "#8080ff", linestyle = '--' ) + line([ (x3, g3), (x3, y3)], color = "blue", linestyle = '--' )
+                            
+                            # Solve for a, b, and c - function f
+                            quad = matrix([ [x1^2, x1, 1, y1], [x2^2, x2, 1, y2], [x3^2, x3, 1, y3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the f parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = '#99e699' )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'green', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'green', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'green', size = 30 )
+                            
+                            # Then do the same for g
+                            quad = matrix([ [x1^2, x1, 1, g1], [x2^2, x2, 1, g2], [x3^2, x3, 1, g3] ])
+                            solutions = quad.rref()
+                            a = solutions[0][3]
+                            b = solutions[1][3]
+                            c = solutions[2][3]
+                            
+                            # Plot the g parabola approximation
+                            quad_eq = a*x^2 + b*x + c
+                            x1_height = quad_eq(x=x1)
+                            x3_height = quad_eq(x=x3)
+                            rectangles += plot( quad_eq, x_min, x_max, color = ( 0.75, 0.5, 0.5 ) )                            
+                            rectangles += plot( quad_eq, x1, x3, color = 'red', thickness = 2 )
+                            rectangles += point( (x1, x1_height ), color = 'red', size = 30 )
+                            rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                print "The approximate Riemann sum is " + str(sum_area) + "."  
+                print "The approximated area is " + str(sum_area.n()) + "."  
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -510,7 +696,7 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
                         sum_area += N(width * (f - g))
                         
                 # Print the approximated area
-                print "The approximate Riemann sum is " + str(sum_area) + "."   
+                print "The approximated area is " + str(sum_area.n()) + "."   
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -558,6 +744,6 @@ def riemann2( func = input_box( default = x^2, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 22nd, 2017.
+Last modified on July 6th, 2017.
 </body>
 </html>
