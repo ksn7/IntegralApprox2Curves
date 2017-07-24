@@ -48,11 +48,11 @@ $(function () {
 @interact( layout = [ ['func', 'gunc', 'sum_type'], ['lower', 'upper', 'n'], ['x_min', 'x_max', 'draw_rectangles'] ])
 def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 20), 
         gunc = input_box( default = 0, label = "g(x) = ", width = 20), 
-        lower = input_box( default = 0, label = "a = ", width = 5), 
-        upper = input_box( default = 3, label = "b = ", width = 5), 
+        lower = input_box( default = 1, label = "a = ", width = 5), 
+        upper = input_box( default = 4, label = "b = ", width = 5), 
         n = input_box( default = 6, label = "# of intervals", width = 5), 
         x_min = input_box( default = 0, label = "x min", width = 5), 
-        x_max = input_box( default = 4, label = "x max", width = 5),
+        x_max = input_box( default = 5, label = "x max", width = 5),
         sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum', 'trapezoidal', 'Simpsons Rule'], label = "type of sum"),
         draw_rectangles = False ):
     
@@ -179,12 +179,20 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     for j in range(n) :
                         min = lower + j * width
                         max = lower + (j+1) * width
-                        if f(min) == g(min):
-                            rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
-                        elif f(max) == g(max):
-                            rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
-                        else:    
-                            rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        if ((f(max) - g(max)) + (f(min) - g(min)))/2 * width > 0 :
+                            if f(min) == g(min):
+                                rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            elif f(max) == g(max):
+                                rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            else:    
+                                rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        else :
+                            if f(min) == g(min):
+                                rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            elif f(max) == g(max):
+                                rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            else:    
+                                rectangles += polygon([ (min, f(min)), (min, g(min)), (max, g(max)), (max, f(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                         sum_area += N( ((f(max) - g(max)) + (f(min) - g(min)))/2 * width )
                  
                 # Simpson's Rule
@@ -250,7 +258,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                print "The approximated area is " + str(sum_area.n()) + "."             
+                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )          
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -402,19 +410,27 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     for j in range(n) :
                         min = lower + j * width
                         max = lower + (j+1) * width
-                        if f(min) == g:
-                            rectangles += polygon([ (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
-                        elif f(max) == g:
-                            rectangles += polygon([ (min, f(min)), (min, g), (max, g) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
-                        else:
-                            rectangles += polygon([ (min, f(min)), (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        if ((f(max) - g) + (f(min) - g))/2 * width > 0 :
+                            if f(min) == g:
+                                rectangles += polygon([ (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            elif f(max) == g:
+                                rectangles += polygon([ (min, f(min)), (min, g), (max, g) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            else:
+                                rectangles += polygon([ (min, f(min)), (min, g), (max, g), (max, f(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        else :
+                            if f(min) == g:
+                                rectangles += polygon([ (min, g), (max, g), (max, f(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            elif f(max) == g:
+                                rectangles += polygon([ (min, f(min)), (min, g), (max, g) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            else:
+                                rectangles += polygon([ (min, f(min)), (min, g), (max, g), (max, f(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
                         sum_area += N( ((f(max) - g) + (f(min) - g))/2 * width )
                         
                 # Simpson's Rule
                 elif sum_type == "Simpsons Rule" :
                     
                     if not n%2 == 0 :
-                        print "n must be even to run Simpson's Rule"
+                        pretty_print( "n must be even to run Simpson's Rule" )
                         
                     else :
                         for j in range(n/2) :
@@ -473,7 +489,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )
                         
                 # Print the approximated area
-                print "The approximated area is " + str(sum_area.n()) + "."                          
+                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )                      
                                                                 
     except:
         f = func
@@ -576,13 +592,22 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                 elif sum_type == "trapezoidal" :
                     for j in range(n) :
                         min = lower + j * width
+                        mid = lower + j * width + half
                         max = lower + (j+1) * width
-                        if f == g(min):
-                            rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
-                        elif f == g(max):
-                            rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                        if f > g(mid):
+                            if ((f - g(max)) + (f - g(min)))/2 * width > 0:
+                                rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            elif f == g(max):
+                                rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            else:
+                                rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
                         else:
-                            rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)), (max, f) ], color = '#60A70F', edgecolor = '#508810', thickness = 2, aspect_ratio = 'automatic')
+                            if f == g(min):
+                                rectangles += polygon([ (min, g(min)), (max, g(max)), (max, f) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            elif f == g(max):
+                                rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')
+                            else:
+                                rectangles += polygon([ (min, f), (min, g(min)), (max, g(max)), (max, f) ], color = '#ff4d4d', edgecolor = '#ff3300', thickness = 2, aspect_ratio = 'automatic')                            
                         sum_area += N( ((f - g(max)) + (f - g(min)))/2 * width )
                 
                 # Simpson's Rule
@@ -648,7 +673,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                print "The approximated area is " + str(sum_area.n()) + "."  
+                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -696,7 +721,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                         sum_area += N(width * (f - g))
                         
                 # Print the approximated area
-                print "The approximated area is " + str(sum_area.n()) + "."   
+                pretty_print( "The approximated area is " + str(sum_area.n()) + "." ) 
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -734,7 +759,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
     l=0
     while precision <= 10^-l:
         l += 1
-    print "The actual value of the integral is " + str(area) + ", accurate to 10^-" + str(l) + "."
+    pretty_print( "The actual value of the integral is " + str(area) + ", accurate to 10^-" + str(l) + "." )
     
     # Combine the plots and show the graph
     graph = graph_g + graph_filled + graph_f + rectangles
@@ -744,6 +769,6 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
 </div>
 
 <hr>
-Last modified on July 17th, 2017.
+Last modified on July 24th, 2017.
 </body>
 </html>
