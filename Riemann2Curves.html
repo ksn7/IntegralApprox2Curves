@@ -140,9 +140,9 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                         min = lower + j * width
                         max = lower + (j+1) * width
                         f_min = f.find_local_minimum(min, max)
-                        g_min = g.find_local_minimum(min, max)
+                        g_max = g.find_local_maximum(min, max)
                         height_f = f_min[0]
-                        height_g = g_min[0]
+                        height_g = g_max[0]
                         if height_f != height_g :
                             if height_f > height_g:
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
@@ -160,9 +160,9 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                         min = lower + j * width
                         max = lower + (j+1) * width
                         f_max = f.find_local_maximum(min, max)
-                        g_max = g.find_local_maximum(min, max)
+                        g_min = g.find_local_minimum(min, max)
                         height_f = f_max[0]
-                        height_g = g_max[0]
+                        height_g = g_min[0]
                         if f(height_f) != g(height_g) :
                             if height_f > height_g:
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
@@ -200,6 +200,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     
                     if not n%2 == 0 :
                         print "n must be even to run Simpson's Rule"
+                        exit()
                         
                     else :
                         for j in range(n/2) :
@@ -431,6 +432,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     
                     if not n%2 == 0 :
                         pretty_print( "n must be even to run Simpson's Rule" )
+                        exit()
                         
                     else :
                         for j in range(n/2) :
@@ -555,9 +557,9 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     for j in range(n) :
                         min = lower + j * width
                         max = lower + (j+1) * width
-                        g_min = g.find_local_minimum(min, max)
+                        g_max = g.find_local_maximum(min, max)
                         height_f = f
-                        height_g = g_min[0]
+                        height_g = g_max[0]
                         if height_f != height_g :
                             if height_f > height_g:
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
@@ -574,10 +576,10 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     for j in range(n) :
                         min = lower + j * width
                         max = lower + (j+1) * width
-                        g_max = g.find_local_maximum(min, max)
+                        g_min = g.find_local_minimum(min, max)
                         height_f = f
-                        height_g = g_max[0]
-                        if f(height_f) != g(height_g) :
+                        height_g = g_min[0]
+                        if height_f != height_g :
                             if height_f > height_g:
                                 rectangles += polygon([ (min, height_f), (min, height_g), 
                                     (max, height_g), (max, height_f) ], color = '#60A70F', 
@@ -615,6 +617,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                     
                     if not n%2 == 0 :
                         print "n must be even to run Simpson's Rule"
+                        exit()
                         
                     else :
                         for j in range(n/2) :
@@ -769,6 +772,6 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
 </div>
 
 <hr>
-Last modified on July 24th, 2017.
+Last modified on July 28th, 2017.
 </body>
 </html>
