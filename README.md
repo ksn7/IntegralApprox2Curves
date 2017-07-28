@@ -1,2 +1,2 @@
-# Riemann2Curves
-An interactive demo to help visualize the Riemann sums technique between two curves. HTML code with an interactive SageMath cell.
+# IntegralApprox2Curves
+An interactive demo to help visualize integral approximation techniques between two curves. HTML code with an interactive SageMath cell.
