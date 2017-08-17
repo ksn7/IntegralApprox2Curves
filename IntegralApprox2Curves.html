@@ -46,13 +46,13 @@ $(function () {
 <script type="text/x-sage">
 
 @interact( layout = [ ['func', 'gunc', 'sum_type'], ['lower', 'upper', 'n'], ['x_min', 'x_max', 'draw_rectangles'] ])
-def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 20), 
-        gunc = input_box( default = 0, label = "g(x) = ", width = 20), 
-        lower = input_box( default = 1, label = "a = ", width = 5), 
-        upper = input_box( default = 4, label = "b = ", width = 5), 
+def riemann2( func = input_box( default = x^3 - 6*x, label = "$f(x) = $", width = 20), 
+        gunc = input_box( default = 0, label = "$g(x) = $", width = 20), 
+        lower = input_box( default = 1, label = "$a = $", width = 5), 
+        upper = input_box( default = 4, label = "$b = $", width = 5), 
         n = input_box( default = 6, label = "# of intervals", width = 5), 
-        x_min = input_box( default = 0, label = "x min", width = 5), 
-        x_max = input_box( default = 5, label = "x max", width = 5),
+        x_min = input_box( default = 0, label = "$x_{min}$", width = 5), 
+        x_max = input_box( default = 5, label = "$x_{max}$", width = 5),
         sum_type = selector(['left', 'right', 'midpoint', 'minimum', 'maximum', 'trapezoidal', 'Simpsons Rule'], label = "type of sum"),
         draw_rectangles = False ):
     
@@ -259,7 +259,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )          
+                pretty_print( "The approximated area is %6.7f." %sum_area.n() )          
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -491,7 +491,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )
                         
                 # Print the approximated area
-                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )                      
+                pretty_print( "The approximated area is %6.7f." %sum_area.n() )                      
                                                                 
     except:
         f = func
@@ -676,7 +676,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                             rectangles += point( (x3, x3_height ), color = 'red', size = 30 )                 
                             
                 # Print the approximated area
-                pretty_print( "The approximated area is " + str(sum_area.n()) + "." )
+                pretty_print( "The approximated area is %6.7f." %sum_area.n() )
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -724,7 +724,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
                         sum_area += N(width * (f - g))
                         
                 # Print the approximated area
-                pretty_print( "The approximated area is " + str(sum_area.n()) + "." ) 
+                pretty_print( "The approximated area is %6.7f." %sum_area.n() ) 
             
             # While loop to find all the roots of the function
             while x_end <= upper :
@@ -762,7 +762,7 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
     l=0
     while precision <= 10^-l:
         l += 1
-    pretty_print( "The actual value of the integral is " + str(area) + ", accurate to 10^-" + str(l) + "." )
+    pretty_print( "The actual value of the integral is %6.7f" %area + ", accurate to 10^-" + str(l) + "." )
     
     # Combine the plots and show the graph
     graph = graph_g + graph_filled + graph_f + rectangles
@@ -772,6 +772,6 @@ def riemann2( func = input_box( default = x^3 - 6*x, label = "f(x) = ", width = 
 </div>
 
 <hr>
-Last modified on July 28th, 2017.
+Last modified on August 16th, 2017.
 </body>
 </html>
